@@ -20,6 +20,8 @@ services:
       - "traefik.http.routers.todoapp.rule=Host(`todoapp.localhost`)"
       - "traefik.http.routers.todoapp.tls=true"
       - "traefik.http.services.todoapp.loadbalancer.server.port=3000"
+      - "traefik.http.routers.todoapp.middlewares=frontend-auth"
+      - "traefik.http.middlewares.frontend-auth.basicauth.users=user:$$2y$$14$$dy8DQxq/55.sKCOaNE89yutYtt0GhM8Tylq5/WGdcPVcx.9oTkWxu"
     networks:
       - proxy
       - default
