@@ -10,8 +10,9 @@ With the ToDo list app the user can create, checkmark or delete items on a publi
 ```
 git pull https://github.com/Sinns/CNSP_CT.git
 cd CNSP_CT
+docker network create proxy
 docker-compose up -d
 ```
 
-Afterwards the app can be reached via `http://127.0.0.1:3000/`
+Afterwards the app can be reached via `https://todoapp.localhost`
 

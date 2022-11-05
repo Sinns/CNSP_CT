@@ -1,27 +1,57 @@
 version: "3.3"
 
 services:
-  app:
+  todoapp:
     image: node:12-alpine
+    container_name: todoapp 
+    restart: unless-stopped
     command: sh -c "yarn install && yarn run dev"
-    ports:
-      - 3000:3000
     working_dir: /app
     volumes:
       - ./:/app
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+      MYSQL_PASSWORD: "j2yiAE3wQUF8DWetExSgrCVei#"
       MYSQL_DB: todos
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.todoapp.rule=Host(`todoapp.localhost`)"
+      - "traefik.http.routers.todoapp.tls=true"
+      - "traefik.http.services.todoapp.loadbalancer.server.port=3000"
+    networks:
+      - proxy
+      - default
 
   mysql:
     image: mysql:5.7
+    restart: unless-stopped
     volumes:
-      - todo-mysql-data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: "j2yiAE3wQUF8DWetExSgrCVei#"
       MYSQL_DATABASE: todos
+    networks:
+      - default
 
-volumes:
-  todo-mysql-data:
+  reverse-proxy:
+    image: traefik:v2.9.4
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      # Web
+      #- 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik_data/config/static.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik_data/config/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./traefik_data/certs:/etc/certs:ro
+    networks:
+      - proxy
+      - default
+
+networks:
+  proxy:
+    external: true
