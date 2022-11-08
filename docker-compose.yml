@@ -20,8 +20,7 @@ services:
       - "traefik.http.routers.todoapp.rule=Host(`todoapp.localhost`)"
       - "traefik.http.routers.todoapp.tls=true"
       - "traefik.http.services.todoapp.loadbalancer.server.port=3000"
-      - "traefik.http.routers.todoapp.middlewares=frontend-auth"
-      - "traefik.http.middlewares.frontend-auth.basicauth.users=user:$$2y$$14$$dy8DQxq/55.sKCOaNE89yutYtt0GhM8Tylq5/WGdcPVcx.9oTkWxu"
+      - "traefik.http.routers.todoapp.middlewares=authelia@docker"
     networks:
       - proxy
       - default
@@ -53,6 +52,25 @@ services:
     networks:
       - proxy
       - default
+
+  authelia:
+    container_name: authelia
+    image: authelia/authelia
+    restart: always
+    volumes:
+       - ./authelia/config:/config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authelia-rtr.entrypoints=https"
+      - "traefik.http.routers.authelia.rule=Host(`auth.todoapp.localhost`)"
+      - "traefik.http.routers.authelia.tls=true"
+      - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/verify?rd=https://auth.todoapp.localhost/"
+      - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User, Remote-Groups, Remote-Name, Remote-Email"
+    networks:
+      - proxy
+      - default
+
 
 networks:
   proxy:

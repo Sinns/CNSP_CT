@@ -1,0 +1,58 @@
+###############################################################
+#                   Authelia configuration                    #
+###############################################################
+
+# This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
+jwt_secret: sNne3LZG0+IKr6sxD4c/SjXHvz4iikdwXb//5P/mPgekYZ50Qnk+/h1cxUUFhL7y9gn+48PJMadK7OaBimJwIw==
+default_redirection_url: https://auth.todoapp.localhost
+
+server:
+  host: 0.0.0.0
+  port: 9091
+
+log:
+  level: warn
+
+totp:
+  issuer: auth.todoapp.localhost
+
+authentication_backend:
+  file:
+    path: /config/users.yml
+    password:
+      algorithm: argon2id
+      iterations: 1
+      salt_length: 16
+      parallelism: 8
+      memory: 128
+
+access_control:
+  default_policy: deny
+  rules:
+    # Rules applied to everyone
+    - domain: auth.todoapp.localhost
+      policy: bypass
+    - domain: todoapp.localhost
+      policy: two_factor
+
+session:
+  name: authelia_session
+  # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET_FILE
+  secret: jd13G+jO0w2hHaC1zRRBU/1dwYRez68zUumIxg1e1Bg+tqx9L7a1e0OmwQukvcum+5NtE5GxyOkq11YtGjy/8Q==
+  expiration: 3600  # 1 hour
+  inactivity: 300  # 5 minutes
+  domain: todoapp.localhost  # Should match whatever your root protected domain is
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  encryption_key: a_very_important_secret
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt

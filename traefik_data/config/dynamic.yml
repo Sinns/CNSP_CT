@@ -11,6 +11,14 @@ http:
           - main: "todoapp.local"
             sans:
               - "*.todoapp.local"
+      depends_on:
+       - authelia
+  middlewares:
+    authelia:
+      forwardauth:
+        address: https://authelia:9091/api/verify?rd=https://auth.todoapp.localhost
+        trustForwardHeader: true
+        authResponseHeaders: Remote-User,Remote-Groups,Remote-Name,Remote-Email
 
 tls:
   certificates:
