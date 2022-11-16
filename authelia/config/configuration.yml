@@ -49,7 +49,7 @@ regulation:
   ban_time: 300
 
 storage:
-  encryption_key: a_very_important_secret
+  encryption_key: JxkAALj3BMy&nexkCZvoVv8!Kub
   local:
     path: /config/db.sqlite3
 
