@@ -8,7 +8,7 @@ With the ToDo list app the user can create, checkmark or delete items on a publi
 ## How to run
 
 ```
-git pull https://github.com/Sinns/CNSP_CT.git
+git clone https://github.com/Sinns/CNSP_CT.git
 cd CNSP_CT
 docker network create proxy
 docker-compose up -d
