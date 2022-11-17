@@ -16,3 +16,5 @@ docker-compose up -d
 
 Afterwards the app can be reached via `https://todoapp.localhost`
 
+The mails sent from the 2FA system are stored in the file `/CNSP_CT/authelia/config` and are needed to connect Google Authenticator.
+
